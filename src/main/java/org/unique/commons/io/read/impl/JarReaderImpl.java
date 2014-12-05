@@ -1,4 +1,4 @@
-package org.unique.commons.io.read;
+package org.unique.commons.io.read.impl;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
@@ -11,10 +11,13 @@ import java.util.jar.JarFile;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.unique.commons.io.read.AbstractClassReader;
+import org.unique.commons.io.read.ClassReader;
+import org.unique.commons.io.read.ClassReaderException;
 import org.unique.commons.utils.CollectionUtil;
 import org.unique.commons.utils.Validate;
 
-public class JarReaderImpl implements ClassReader {
+public class JarReaderImpl extends AbstractClassReader implements ClassReader {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(JarReaderImpl.class);
 	

@@ -2,14 +2,14 @@ package org.unique;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.unique.aop.AbstractMethodInterceptor;
 import org.unique.aop.intercept.AbstractMethodInterceptorFactory;
 import org.unique.commons.io.PropUtil;
-import org.unique.commons.utils.ClassHelper;
+import org.unique.commons.io.read.ClassReader;
+import org.unique.commons.io.read.impl.ClassPathClassReader;
 import org.unique.commons.utils.CollectionUtil;
 import org.unique.commons.utils.StringUtils;
 import org.unique.ioc.AbstractBeanFactory;
@@ -20,8 +20,8 @@ import org.unique.ioc.impl.SingleBean;
 import org.unique.support.Support;
 import org.unique.support.SupportManager;
 import org.unique.web.annotation.Controller;
-import org.unique.web.core.WebContext;
 import org.unique.web.core.RouteMapping;
+import org.unique.web.core.WebContext;
 import org.unique.web.handler.DefalutHandler;
 import org.unique.web.handler.Handler;
 import org.unique.web.interceptor.AbstractRouteInterceptor;
@@ -37,21 +37,26 @@ public final class Unique {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Unique.class);
 
 	private Handler handler;
-
+	
+	/**
+	 * 类读取接口
+	 */
+	private ClassReader classReader;
+	
 	/**
 	 * web路由映射器
 	 */
-	private final RouteMapping routeMapping;
+	private RouteMapping routeMapping;
 	
 	/**
 	 * IOC容器
 	 */
-	private final Container container;
+	private Container container;
 	
 	/**
 	 * Bean工厂
 	 */
-	private final AbstractBeanFactory beanFactory;
+	private AbstractBeanFactory beanFactory;
 	
 	/**
 	 * 方法拦截器
@@ -59,6 +64,7 @@ public final class Unique {
 	private final List<AbstractMethodInterceptor> abstractMethodInterceptor;
 	
 	private Unique() {
+		classReader = new ClassPathClassReader();
 		routeMapping = RouteMapping.single();
 		container = DefaultContainerImpl.single();
 		beanFactory = new SingleBean();
@@ -127,7 +133,7 @@ public final class Unique {
 	 * 初始化第三方增强
 	 */
 	private void initSupport() {
-		List<Class<?>> supportList = ClassHelper.scanClasses("org.unique.support", Support.class, true);
+		List<Class<?>> supportList = classReader.getClass("org.unique.support", Support.class, true);
 		if(supportList.size() > 0){
 			try {
 				for (Class<?> clazz : supportList) {
@@ -148,7 +154,7 @@ public final class Unique {
 	 */
 	private void initIOC() {
 		//初始化系统类库
-		List<Class<?>> sysClasses = ClassHelper.scanClassesByAnnotation("org.unique.sys", Component.class, false);
+		List<Class<?>> sysClasses = classReader.getClassByAnnotation("org.unique.sys", Component.class, false);
 		container.registBean(sysClasses);
 		//初始化自定义类
 		String scanPackage = Const.getConfig("unique.scannpackage");
@@ -219,7 +225,7 @@ public final class Unique {
 		if (pack.endsWith(".*")) {
 			pack = pack.substring(0, pack.length() - 2);
 		}
-		Set<Class<?>> classes = ClassHelper.scanPackage(pack, true);
+		List<Class<?>> classes = classReader.getClass(pack, true);
 		for (Class<?> clazz : classes) {
 			
 			// 是一个控制器，为他添加系统的路由拦截器
