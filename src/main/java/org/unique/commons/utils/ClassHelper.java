@@ -22,6 +22,7 @@ import org.unique.Const;
  * @author biezhi
  * @since 1.0
  */
+@Deprecated
 public class ClassHelper {
 
     private static final Logger logger = LoggerFactory.getLogger(ClassHelper.class);
