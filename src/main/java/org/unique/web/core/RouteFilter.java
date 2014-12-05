@@ -45,7 +45,7 @@ public class RouteFilter implements Filter {
 			logger.info("Root WebApplicationContext: 初始化开始...");
 			
 			// config path
-			RouteContext.setActionContext(config.getServletContext());
+			WebContext.setActionContext(config.getServletContext());
 			
 			// init web
 			isInit = unique.init(config_path, route_suffix);
@@ -73,7 +73,7 @@ public class RouteFilter implements Filter {
 		String target = getRelativePath(request, "");
 
 		// set reqest and response
-		RouteContext.setActionContext(request.getServletContext(), request, response);
+		WebContext.setActionContext(request.getServletContext(), request, response);
 		if (!handler.handle(target, request, response)) {
 			chain.doFilter(request, response);
 		}

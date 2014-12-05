@@ -54,7 +54,7 @@ public class RouteInvocation implements MethodInvocation {
 		this.arguments = route.getParameters();
 		this.method = route.getMethod();
 		this.controllerClass = route.getControllerClass();
-		R.put(RouteContext.getHttpServletRequest(), RouteContext.getHttpServletResponse());
+		R.put(WebContext.getHttpServletRequest(), WebContext.getHttpServletResponse());
 	}
 	
 	@Override

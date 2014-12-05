@@ -1,29 +1,27 @@
-package org.unique.commons.io.resource;
+package org.unique.commons.io.filenode;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.net.URI;
 import java.net.URL;
-import java.nio.charset.Charset;
 
-public interface ResourceNode {
+public interface FileNode {
 
-	public static final String URL_PREFIX_CLASSPATH = "classpath:";
-    public static final String URL_PREFIX_FILE = "file:";
-    public static final String URL_PREFIX_JAR = "jar:";
-    public static final String URL_PREFIX_ZIP = "zip:";
-    public static final String URL_PROTOCOL_FILE = "file";
-    public static final String URL_PROTOCOL_JAR = "jar";
-    public static final String URL_PROTOCOL_ZIP = "zip";
-    public static final String URL_PROTOCOL_VFS = "vfs";
-    public static final String URL_SEPARATOR_JAR = "!/";
+//	public static final String URL_PREFIX_CLASSPATH = "classpath:";
+//    public static final String URL_PREFIX_FILE = "file:";
+//    public static final String URL_PREFIX_JAR = "jar:";
+//    public static final String URL_PREFIX_ZIP = "zip:";
+//    public static final String URL_PROTOCOL_FILE = "file";
+//    public static final String URL_PROTOCOL_JAR = "jar";
+//    public static final String URL_PROTOCOL_ZIP = "zip";
+//    public static final String URL_PROTOCOL_VFS = "vfs";
+//    public static final String URL_SEPARATOR_JAR = "!/";
 
     /**
      * 代表 Resource 名称，默认是 url/file (包含路径)
      */
     public String getRelativePathName();
-
+    
     public void setRelativePathName(String relativePathName);
 
     /**
@@ -32,29 +30,9 @@ public interface ResourceNode {
     public InputStream openStream() throws FileNotFoundException;
 
     /**
-     * 获取文件内容.
-     */
-    public byte[] toByteArray() throws FileNotFoundException;
-
-    /**
-     * 获取文件内容.
-     */
-    public char[] toCharArray(Charset charset) throws FileNotFoundException;
-
-    /**
-     * 获取文件内容.
-     */
-    public String toString(Charset charset) throws FileNotFoundException;
-
-    /**
      * 文件对象.
      */
     public File getFile() throws UnsupportedOperationException;
-
-    /**
-     * URI 对象.
-     */
-    public URI getURI() throws UnsupportedOperationException;
 
     /**
      * URL 对象.

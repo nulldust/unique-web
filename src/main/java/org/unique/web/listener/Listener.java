@@ -5,4 +5,6 @@ package org.unique.web.listener;
  * @author biezhi
  * @since 1.0
  */
-public interface UniqueListener {}
+public interface Listener {
+	
+}

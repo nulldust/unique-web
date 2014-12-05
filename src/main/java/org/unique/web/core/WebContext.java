@@ -6,13 +6,13 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 /**
- * 全局的ActionContext
+ * 全局的WeContext
  * @author biezhi
  * @since 1.0
  */
-public final class RouteContext {
+public final class WebContext {
 
-    private static final ThreadLocal<RouteContext> actionContextThreadLocal = new ThreadLocal<RouteContext>();
+    private static final ThreadLocal<WebContext> actionContextThreadLocal = new ThreadLocal<WebContext>();
     
     private ServletContext context;
     private HttpServletRequest request;
@@ -49,12 +49,12 @@ public final class RouteContext {
     /**
      * get ActionContext
      */
-    private static RouteContext single() {
-        RouteContext actionContext = actionContextThreadLocal.get();
+    private static WebContext single() {
+        WebContext actionContext = actionContextThreadLocal.get();
         if(null != actionContext){
             return actionContext;
         }
-        actionContextThreadLocal.set(new RouteContext());
+        actionContextThreadLocal.set(new WebContext());
         return actionContextThreadLocal.get();
     }
     
@@ -81,7 +81,7 @@ public final class RouteContext {
      * @param response HttpServletResponse对象
      */
     public static void setActionContext(ServletContext context, HttpServletRequest request, HttpServletResponse response) {
-    	RouteContext actionContext = single();
+    	WebContext actionContext = single();
     	actionContext.context = context;
     	actionContext.request = request;
     	actionContext.response = response;

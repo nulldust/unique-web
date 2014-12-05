@@ -20,7 +20,7 @@ import org.unique.ioc.impl.SingleBean;
 import org.unique.support.Support;
 import org.unique.support.SupportManager;
 import org.unique.web.annotation.Controller;
-import org.unique.web.core.RouteContext;
+import org.unique.web.core.WebContext;
 import org.unique.web.core.RouteMapping;
 import org.unique.web.handler.DefalutHandler;
 import org.unique.web.handler.Handler;
@@ -207,7 +207,7 @@ public final class Unique {
 		Object obj = beanFactory.getBean(WebInitContextListener.class.getName());
 		if (null != obj && obj instanceof WebInitContextListener) {
 			WebInitContextListener initListener = (WebInitContextListener) obj;
-			initListener.contextInit(RouteContext.getServletContext());
+			initListener.contextInit(WebContext.getServletContext());
 		}
 	}
 

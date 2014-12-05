@@ -8,7 +8,7 @@ import javax.servlet.ServletContext;
  * @author biezhi
  * @since 1.0
  */
-public interface WebInitContextListener extends UniqueListener{
+public interface WebInitContextListener extends Listener{
 	
 	/**
 	 * context初始化方法
