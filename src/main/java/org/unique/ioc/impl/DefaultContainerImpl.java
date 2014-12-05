@@ -34,16 +34,14 @@ public class DefaultContainerImpl implements Container {
     /**
      * 保存所有bean对象
      */
-    private final Map<String, Object> beansMap;
+    private static final Map<String, Object> beansMap = CollectionUtil.newConcurrentHashMap();
     
     /**
      * 保存所有注解的class
      */
-    private final Map<Class<? extends Annotation>, List<Object>> annotationMap;
+    private static final Map<Class<? extends Annotation>, List<Object>> annotationMap = CollectionUtil.newConcurrentHashMap();
     
     private DefaultContainerImpl() {
-    	beansMap = CollectionUtil.newHashMap();
-    	annotationMap = CollectionUtil.newHashMap();
     }
     
     public static DefaultContainerImpl single() {
@@ -69,7 +67,7 @@ public class DefaultContainerImpl implements Container {
 
     @Override
     public Object getBean(Class<?> type, Scope scope) {
-        Iterator<Object> it = this.beansMap.values().iterator();
+        Iterator<Object> it = beansMap.values().iterator();
         while (it.hasNext()) {
             Object obj = it.next();
             if (type.isAssignableFrom(obj.getClass())) {
@@ -124,23 +122,34 @@ public class DefaultContainerImpl implements Container {
     @Override
     public Object registBean(Class<?> clazz) {
         String name = clazz.getCanonicalName();
-        Object obj = null;
+        Object object = null;
 		//非抽象类or接口
 		if (!Modifier.isAbstract(clazz.getModifiers()) && !clazz.isInterface()) {
 		    logger.debug("to load the class：" + name);
-		    obj = newInstance(clazz);
-		    beansMap.put(name, obj);
+		    object = newInstance(clazz);
+		    put(name, object);
 		    //实现的接口对应存储
 		    if(clazz.getInterfaces().length > 0){
-		    	beansMap.put(clazz.getInterfaces()[0].getCanonicalName(), obj);
+		    	put(clazz.getInterfaces()[0].getCanonicalName(), object);
 		    }
 		    //带有annotation
 		    if(null != clazz.getDeclaredAnnotations()){
-		    	putAnnotationMap(clazz, obj);
+		    	putAnnotationMap(clazz, object);
 		    }
 		}
-		return obj;
+		return object;
 	}
+    
+    /**
+     * bean容器存储
+     * @param name
+     * @param object
+     */
+    private void put(String name, Object object){
+    	if(null == beansMap.get(name)){
+    		beansMap.put(name, object);
+    	}
+    }
     
     /**
      * 给annotationMap添加元素
@@ -156,8 +165,19 @@ public class DefaultContainerImpl implements Container {
     				listObject = CollectionUtil.newArrayList();
     			}
     			listObject.add(object);
-    			annotationMap.put(annotation.annotationType(), listObject);
+    			put(annotation.annotationType(), listObject);
     		}
+    	}
+    }
+    
+    /**
+     * annotationBean容器存储
+     * @param clazz
+     * @param listObject
+     */
+    private void put(Class<? extends Annotation> clazz, List<Object> listObject){
+    	if(null == annotationMap.get(clazz)){
+    		annotationMap.put(clazz, listObject);
     	}
     }
     
@@ -188,7 +208,7 @@ public class DefaultContainerImpl implements Container {
      */
     @Override
     public void initWired() {
-        Iterator<Object> it = this.beansMap.values().iterator();
+        Iterator<Object> it = beansMap.values().iterator();
         try {
             while (it.hasNext()) {
                 Object obj = it.next();
@@ -201,7 +221,7 @@ public class DefaultContainerImpl implements Container {
                         // 指定装配的类
                         if (autowired.value() != Class.class) {
                             wiredField = this.getBean(autowired.value(), Scope.SINGLE);
-                         // 容器有该类
+                            // 容器有该类
                             if (null == wiredField) {
                                 wiredField = this.registBean(autowired.value());
                             }
@@ -268,7 +288,7 @@ public class DefaultContainerImpl implements Container {
 	}
 	
 	@Override
-	public void registBean(List<Class<?>> classes) {
+	public void registBean(Set<Class<?>> classes) {
 		if(!CollectionUtil.isEmpty(classes)){
 			for(Class<?> clazz : classes){
 				this.registBean(clazz);

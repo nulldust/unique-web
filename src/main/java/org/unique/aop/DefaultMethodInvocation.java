@@ -4,6 +4,8 @@ import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Method;
 import java.util.List;
 
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.unique.aop.annotation.After;
 import org.unique.aop.annotation.Before;
 import org.unique.aop.intercept.MethodInvocation;
@@ -14,6 +16,8 @@ import org.unique.aop.intercept.MethodInvocation;
  * @since 1.0
  */
 public class DefaultMethodInvocation implements MethodInvocation {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(DefaultMethodInvocation.class);
 	
 	List<AbstractMethodInterceptor> interceptors;
 	private DefaultProxy proxy;
@@ -47,7 +51,7 @@ public class DefaultMethodInvocation implements MethodInvocation {
 			try {
 				result = method.invoke(target, args);
 			} catch (RuntimeException e) {
-				System.out.println(e.getMessage());
+				LOGGER.error(e.getMessage());
 			}
 		}
 		if (index > 0) {

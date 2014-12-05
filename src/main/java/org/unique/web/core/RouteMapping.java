@@ -54,6 +54,7 @@ public final class RouteMapping {
 		urlMapping.clear();
 		//所有控制器
 		List<Class<?>> controllerList = beanFactory.getClassesByAnnotation(Controller.class);
+		
 		//遍历控制器
 		for (Class<?> controller : controllerList) {
 			Method[] methods = controller.getMethods();
@@ -106,7 +107,8 @@ public final class RouteMapping {
 					viewReg = "^" + viewReg + "$";
 					Route action = new Route(controller, method, arguments, methodType, viewPath);
 					if (null != urlMapping.get(viewReg)) {
-						throw new RuntimeException(controller.getName() + ", action \"" + viewPath + "\"重复");
+						//throw new RuntimeException(controller.getName() + ", action \"" + viewPath + "\"重复");
+						warnning(controller, method, "action \"" + viewPath + "\"重复");
 					}
 					urlMapping.put(viewReg, action);
 					logger.info("route ：" + viewPath);

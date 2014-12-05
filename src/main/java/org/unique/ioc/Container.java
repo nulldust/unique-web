@@ -37,7 +37,7 @@ public interface Container {
 
     Object registBean(Class<?> clazz);
     
-    void registBean(List<Class<?>> classes);
+    void registBean(Set<Class<?>> classes);
 
     void initWired();
 

@@ -5,7 +5,7 @@ import java.lang.annotation.Annotation;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.util.Enumeration;
-import java.util.List;
+import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -22,25 +22,24 @@ public class JarReaderImpl extends AbstractClassReader implements ClassReader {
 	private static final Logger LOGGER = LoggerFactory.getLogger(JarReaderImpl.class);
 	
 	@Override
-	public List<Class<?>> getClass(String packageName, boolean recursive) {
+	public Set<Class<?>> getClass(String packageName, boolean recursive) {
 		return this.getClassByAnnotation(packageName, null, null, recursive);
 	}
 
 	@Override
-	public List<Class<?>> getClass(String packageName, Class<?> parent, boolean recursive) {
+	public Set<Class<?>> getClass(String packageName, Class<?> parent, boolean recursive) {
 		return this.getClassByAnnotation(packageName, parent, null, recursive);
 	}
 
 	@Override
-	public List<Class<?>> getClassByAnnotation(String packageName, Class<? extends Annotation> annotation, boolean recursive) {
+	public Set<Class<?>> getClassByAnnotation(String packageName, Class<? extends Annotation> annotation, boolean recursive) {
 		return this.getClassByAnnotation(packageName, null, annotation, recursive);
 	}
 
 	@Override
-	public List<Class<?>> getClassByAnnotation(String packageName, Class<?> parent, Class<? extends Annotation> annotation, boolean recursive) {
+	public Set<Class<?>> getClassByAnnotation(String packageName, Class<?> parent, Class<? extends Annotation> annotation, boolean recursive) {
 		Validate.notBlank(packageName);
-		Validate.notNull(parent);
-		List<Class<?>> classes = CollectionUtil.newArrayList();
+		Set<Class<?>> classes = CollectionUtil.newHashSet();
         // 获取包的名字 并进行替换
         String packageDirName = packageName.replace('.', '/');
         // 定义一个枚举的集合 并进行循环来处理这个目录下的URL
@@ -51,7 +50,7 @@ public class JarReaderImpl extends AbstractClassReader implements ClassReader {
             while (dirs.hasMoreElements()) {
                 // 获取下一个元素
                 URL url = dirs.nextElement();
-				List<Class<?>> subClasses = getClasses(url, packageName, packageName, parent, annotation, recursive);
+				Set<Class<?>> subClasses = getClasses(url, packageName, packageName, parent, annotation, recursive, classes);
 				if(subClasses.size() > 0){
 					classes.addAll(subClasses);
 				}
@@ -62,9 +61,9 @@ public class JarReaderImpl extends AbstractClassReader implements ClassReader {
         return classes;
 	}
 
-	private List<Class<?>> getClasses(final URL url, final String packageDirName, String packageName, final Class<?> parent, final Class<? extends Annotation> annotation, final boolean recursive){
+	private Set<Class<?>> getClasses(final URL url, final String packageDirName, String packageName, final Class<?> parent, 
+			final Class<? extends Annotation> annotation, final boolean recursive, Set<Class<?>> classes){
 		JarFile jar = null;
-		List<Class<?>> classes = CollectionUtil.newArrayList();
 		try {
 			// 获取jar
 			jar = ((JarURLConnection) url.openConnection()).getJarFile();

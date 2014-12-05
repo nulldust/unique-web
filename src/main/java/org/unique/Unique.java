@@ -2,6 +2,7 @@ package org.unique;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +11,7 @@ import org.unique.aop.intercept.AbstractMethodInterceptorFactory;
 import org.unique.commons.io.PropUtil;
 import org.unique.commons.io.read.ClassReader;
 import org.unique.commons.io.read.impl.ClassPathClassReader;
+import org.unique.commons.io.read.impl.JarReaderImpl;
 import org.unique.commons.utils.CollectionUtil;
 import org.unique.commons.utils.StringUtils;
 import org.unique.ioc.AbstractBeanFactory;
@@ -104,12 +106,13 @@ public final class Unique {
 		
 		// 初始化第三方增强
 		initSupport();
-				
+		
 		// 初始化handler
 		initHandler();
 		
 		// 初始化自定义上下文
 		initContext();
+		
 		return true;
 	}
 	
@@ -133,7 +136,8 @@ public final class Unique {
 	 * 初始化第三方增强
 	 */
 	private void initSupport() {
-		List<Class<?>> supportList = classReader.getClass("org.unique.support", Support.class, true);
+		ClassReader jarReader = new JarReaderImpl();
+		Set<Class<?>> supportList = jarReader.getClass("org.unique.support", Support.class, true);
 		if(supportList.size() > 0){
 			try {
 				for (Class<?> clazz : supportList) {
@@ -154,7 +158,8 @@ public final class Unique {
 	 */
 	private void initIOC() {
 		//初始化系统类库
-		List<Class<?>> sysClasses = classReader.getClassByAnnotation("org.unique.sys", Component.class, false);
+		ClassReader jarReader = new JarReaderImpl();
+		Set<Class<?>> sysClasses = jarReader.getClassByAnnotation("org.unique.sys", Component.class, false);
 		container.registBean(sysClasses);
 		//初始化自定义类
 		String scanPackage = Const.getConfig("unique.scannpackage");
@@ -225,9 +230,8 @@ public final class Unique {
 		if (pack.endsWith(".*")) {
 			pack = pack.substring(0, pack.length() - 2);
 		}
-		List<Class<?>> classes = classReader.getClass(pack, true);
+		Set<Class<?>> classes = classReader.getClass(pack, true);
 		for (Class<?> clazz : classes) {
-			
 			// 是一个控制器，为他添加系统的路由拦截器
 			if(null != clazz.getAnnotation(Controller.class)){
 				container.registBean(clazz);
