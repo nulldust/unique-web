@@ -3,7 +3,7 @@ package org.unique.aop.intercept;
 import java.util.List;
 
 import org.unique.aop.AbstractMethodInterceptor;
-import org.unique.commons.tools.CollectionUtil;
+import org.unique.commons.utils.CollectionUtil;
 import org.unique.web.interceptor.AbstractRouteInterceptor;
 
 /**

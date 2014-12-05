@@ -1,4 +1,4 @@
-package org.unique.commons.tools;
+package org.unique.commons.utils;
 
 import java.beans.IntrospectionException;
 import java.beans.Introspector;

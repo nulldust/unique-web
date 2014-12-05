@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.unique.commons.tools.StringUtils;
+import org.unique.commons.utils.StringUtils;
 import org.unique.web.annotation.Controller;
 import org.unique.web.exception.RouteException;
 import org.unique.web.render.Render;
