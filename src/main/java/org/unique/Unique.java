@@ -38,14 +38,26 @@ public final class Unique {
 
 	private Handler handler;
 
+	/**
+	 * web路由映射器
+	 */
 	private final RouteMapping routeMapping;
 	
+	/**
+	 * IOC容器
+	 */
 	private final Container container;
 	
+	/**
+	 * Bean工厂
+	 */
 	private final AbstractBeanFactory beanFactory;
 	
+	/**
+	 * 方法拦截器
+	 */
 	private final List<AbstractMethodInterceptor> abstractMethodInterceptor;
-
+	
 	private Unique() {
 		routeMapping = RouteMapping.single();
 		container = DefaultContainerImpl.single();
@@ -58,16 +70,15 @@ public final class Unique {
 	}
 
 	private static class SingleHoder {
-
 		private static final Unique single = new Unique();
 	}
-
+	
 	/**
 	 * 初始化方法
 	 * @return true:初始化成功 false:初始化失败
 	 */
 	public boolean init(String config_path, String route_suffix) {
-
+		
 		if(StringUtils.isNotBlank(route_suffix)){
 			Const.ROUTE_SUFFIX = route_suffix;
 		}
