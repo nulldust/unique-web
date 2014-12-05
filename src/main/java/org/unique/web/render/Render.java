@@ -22,6 +22,7 @@ public interface Render {
      * @param request 请求对象
      * @param response 响应对象
      * @param viewPath 视图位置
+     * @throws Exception 
      */
 	public void render(HttpServletRequest request, HttpServletResponse response, String viewPath);
 	

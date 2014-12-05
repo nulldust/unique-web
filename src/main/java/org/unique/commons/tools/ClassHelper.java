@@ -1,4 +1,4 @@
-package org.unique.tools;
+package org.unique.commons.tools;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -13,7 +13,8 @@ import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.unique.Const;
 
 /**
@@ -23,7 +24,7 @@ import org.unique.Const;
  */
 public class ClassHelper {
 
-    private static final Logger logger = Logger.getLogger(ClassHelper.class);
+    private static final Logger logger = LoggerFactory.getLogger(ClassHelper.class);
     
     /**
      * 扫描包

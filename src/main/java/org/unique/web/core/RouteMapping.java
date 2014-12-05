@@ -9,11 +9,12 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.unique.commons.tools.CollectionUtil;
+import org.unique.commons.tools.StringUtils;
 import org.unique.ioc.AbstractBeanFactory;
 import org.unique.ioc.impl.SingleBean;
-import org.unique.tools.CollectionUtil;
-import org.unique.tools.StringUtils;
 import org.unique.web.annotation.Controller;
 import org.unique.web.annotation.PathVariable;
 import org.unique.web.annotation.Route.HttpMethod;
@@ -26,7 +27,7 @@ import org.unique.web.render.Render;
  */
 public final class RouteMapping {
 
-	private static Logger logger = Logger.getLogger(RouteMapping.class);
+	private static Logger logger = LoggerFactory.getLogger(RouteMapping.class);
 
 	// route mapping
 	private Map<String, Route> urlMapping = CollectionUtil.newHashMap();

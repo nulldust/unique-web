@@ -3,7 +3,8 @@ package org.unique.web.handler;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.unique.web.annotation.Route.HttpMethod;
 import org.unique.web.core.Route;
 import org.unique.web.core.RouteInvocation;
@@ -23,7 +24,7 @@ public class DefalutHandler implements Handler {
 
     protected static final RenderFactory renderFactory = RenderFactory.single();
 
-    private Logger logger = Logger.getLogger(DefalutHandler.class);
+    private Logger logger = LoggerFactory.getLogger(DefalutHandler.class);
 
     @Deprecated
     public DefalutHandler() {

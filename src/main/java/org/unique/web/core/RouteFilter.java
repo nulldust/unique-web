@@ -11,9 +11,9 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.unique.Unique;
-import org.unique.tools.WebUtil;
 import org.unique.web.handler.Handler;
 
 /**
@@ -23,8 +23,10 @@ import org.unique.web.handler.Handler;
  */
 public class RouteFilter implements Filter {
 
-	private Logger logger = Logger.getLogger(RouteFilter.class);
+	private Logger logger = LoggerFactory.getLogger(RouteFilter.class);
 
+	private static final String SLASH = "/";
+	
 	private static Unique unique = Unique.single();
 
 	private static boolean isInit = false;
@@ -68,7 +70,7 @@ public class RouteFilter implements Filter {
 		HttpServletResponse response = (HttpServletResponse) res;
 		
 		// 相对于系统根目录的访问的路径
-		String target = WebUtil.getRelativePath(request, "");
+		String target = getRelativePath(request, "");
 
 		// set reqest and response
 		RouteContext.setActionContext(request.getServletContext(), request, response);
@@ -76,7 +78,36 @@ public class RouteFilter implements Filter {
 			chain.doFilter(request, response);
 		}
 	}
+	
+	/**
+	 * 获取请求url的相对路径
+	 * @param request
+	 * @param filterPath
+	 * @return
+	 */
+	public static final String getRelativePath(HttpServletRequest request, String filterPath) {
+        String path = request.getRequestURI();
+        String contextPath = request.getContextPath();
+        path = path.substring(contextPath.length());
+        
+        if (path.length() > 0) {
+            path = path.substring(1);
+        }
+        
+        if (!path.startsWith(filterPath) && filterPath.equals(path + SLASH)) {
+            path += SLASH;
+        }
+        if (path.startsWith(filterPath)) {
+            path = path.substring(filterPath.length());
+        }
 
+        if (!path.startsWith(SLASH)) {
+            path = SLASH + path;
+        }
+
+        return path;
+    }
+	
 	/**
 	 * 销毁方法
 	 */

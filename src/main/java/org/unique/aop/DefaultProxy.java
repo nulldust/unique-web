@@ -7,7 +7,7 @@ import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 
-import org.unique.tools.CollectionUtil;
+import org.unique.commons.tools.CollectionUtil;
 
 /**
  * 默认代理获取类

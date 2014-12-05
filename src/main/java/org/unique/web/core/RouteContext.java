@@ -5,8 +5,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.unique.tools.WebUtil;
-
 /**
  * 全局的ActionContext
  * @author biezhi
@@ -73,7 +71,6 @@ public final class RouteContext {
      * @param context ServletContext对象
      */
     public static void setActionContext(ServletContext context){
-        WebUtil.setWebRootPath(context.getRealPath("/"));
         single().context = context;
     }
     

@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.unique.Const;
-import org.unique.tools.IOUtil;
+import org.unique.commons.io.IOUtil;
 import org.unique.web.render.Render;
 import org.unique.web.render.RenderFactory;
 
@@ -18,11 +18,11 @@ public class ErrorRender implements Render {
 	
 	protected static final String contentType = "text/html;charset=" + Const.ENCODING;
 	
-	protected static final String html404 = "<html><head><title>404 Not Found</title></head><body bgcolor='white'><center><h1>404 Not Found</h1></center><hr><center><a>Unique " + Const.UNIQUE_VERSION + "</a></center></body></html>";
-	protected static final String html500 = "<html><head><title>500 Internal Server Error</title></head><body bgcolor='white'><center><h1>500 Internal Server Error</h1></center><hr><center><a>Unique " + Const.UNIQUE_VERSION + "</a></center></body></html>";
+	protected static final String html404 = "<html><head><title>404 Not Found</title></head><body bgcolor='white'><center><h1>404 Not Found</h1></center><hr><center><a>Unique Web</a></center></body></html>";
+	protected static final String html500 = "<html><head><title>500 Internal Server Error</title></head><body bgcolor='white'><center><h1>500 Internal Server Error</h1></center><hr><center><a>Unique Web</a></center></body></html>";
 	
-	protected static final String html401 = "<html><head><title>401 Unauthorized</title></head><body bgcolor='white'><center><h1>401 Unauthorized</h1></center><hr><center><a>Unique " + Const.UNIQUE_VERSION + "</a></center></body></html>";
-	protected static final String html403 = "<html><head><title>403 Forbidden</title></head><body bgcolor='white'><center><h1>403 Forbidden</h1></center><hr><center><a>Unique " + Const.UNIQUE_VERSION + "</a></center></body></html>";
+	protected static final String html401 = "<html><head><title>401 Unauthorized</title></head><body bgcolor='white'><center><h1>401 Unauthorized</h1></center><hr><center><a>Unique Web</a></center></body></html>";
+	protected static final String html403 = "<html><head><title>403 Forbidden</title></head><body bgcolor='white'><center><h1>403 Forbidden</h1></center><hr><center><a>Unique Web</a></center></body></html>";
 	
 	protected int errorCode;
 	private String view;
@@ -65,7 +65,7 @@ public class ErrorRender implements Render {
 			return html401;
 		if (errorCode == 403)
 			return html403;
-		return "<html><head><title>" + errorCode + " Error</title></head><body bgcolor='white'><center><h1>" + errorCode + " Error</h1></center><hr><center><a href='http://www.unique.com'>Unique " + Const.UNIQUE_VERSION + "</a></center></body></html>";
+		return "<html><head><title>" + errorCode + " Error</title></head><body bgcolor='white'><center><h1>" + errorCode + " Error</h1></center><hr><center><a href='http://www.unique.org'>Unique Web</a></center></body></html>";
 	}
 	
 	public int getErrorCode() {

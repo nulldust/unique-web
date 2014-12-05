@@ -4,9 +4,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.unique.aop.AbstractMethodInterceptor;
 import org.unique.aop.intercept.AbstractMethodInterceptorFactory;
+import org.unique.commons.io.PropUtil;
+import org.unique.commons.tools.ClassHelper;
+import org.unique.commons.tools.CollectionUtil;
+import org.unique.commons.tools.StringUtils;
 import org.unique.ioc.AbstractBeanFactory;
 import org.unique.ioc.Container;
 import org.unique.ioc.annotation.Component;
@@ -14,10 +19,6 @@ import org.unique.ioc.impl.DefaultContainerImpl;
 import org.unique.ioc.impl.SingleBean;
 import org.unique.support.Support;
 import org.unique.support.SupportManager;
-import org.unique.tools.ClassHelper;
-import org.unique.tools.CollectionUtil;
-import org.unique.tools.PropUtil;
-import org.unique.tools.StringUtils;
 import org.unique.web.annotation.Controller;
 import org.unique.web.core.RouteContext;
 import org.unique.web.core.RouteMapping;
@@ -33,7 +34,7 @@ import org.unique.web.listener.WebInitContextListener;
  */
 public final class Unique {
 
-	private Logger logger = Logger.getLogger(Unique.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(Unique.class);
 
 	private Handler handler;
 
@@ -124,9 +125,9 @@ public final class Unique {
 					SupportManager.put(clazz.getName(), support);
 				}
 			} catch (InstantiationException e) {
-				logger.error("初始化增强失败: " + e.getMessage());
+				LOGGER.error("初始化增强失败: {}", e.getMessage());
 			} catch (IllegalAccessException e) {
-				logger.error("初始化增强失败: " + e.getMessage());
+				LOGGER.error("初始化增强失败: {}", e.getMessage());
 			}
 		}
 	}
@@ -155,7 +156,7 @@ public final class Unique {
 		for (String pack : packages) {
 			scanPack(pack);
 		}
-		logger.info("beans : " + container.getBeanMap());
+		LOGGER.info("beans : {}", container.getBeanMap());
 	}
 
 	/**

@@ -10,8 +10,6 @@ import java.util.Map;
  */
 public final class Const {
 	
-	public static final String UNIQUE_VERSION = "1.0";
-	
 	public static final String DEFAULT_CONFIG = "unique-default.properties";
 	
 	public static final String SUPPORT_PACKAGE = "org.unique.support";

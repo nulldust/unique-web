@@ -1,6 +1,6 @@
 package org.unique.web.exception;
 
-import org.unique.tools.StringUtils;
+import org.unique.commons.tools.StringUtils;
 import org.unique.web.render.Render;
 import org.unique.web.render.RenderFactory;
 

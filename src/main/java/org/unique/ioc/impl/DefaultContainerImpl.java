@@ -9,17 +9,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.unique.aop.AbstractMethodInterceptor;
 import org.unique.aop.ProxyBeanFactory;
 import org.unique.aop.intercept.AbstractMethodInterceptorFactory;
+import org.unique.commons.tools.CollectionUtil;
+import org.unique.commons.tools.PrototypeUtil;
 import org.unique.ioc.Container;
 import org.unique.ioc.Scope;
 import org.unique.ioc.annotation.Autowired;
 import org.unique.ioc.annotation.Component;
 import org.unique.ioc.annotation.Service;
-import org.unique.tools.CollectionUtil;
-import org.unique.tools.PrototypeUtil;
 
 /**
  * 默认的IOC容器实现
@@ -28,7 +29,7 @@ import org.unique.tools.PrototypeUtil;
  */
 public class DefaultContainerImpl implements Container {
 
-    private static final Logger logger = Logger.getLogger(DefaultContainerImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(DefaultContainerImpl.class);
 
     /**
      * 保存所有bean对象

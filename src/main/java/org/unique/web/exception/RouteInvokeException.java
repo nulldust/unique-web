@@ -1,6 +1,7 @@
 package org.unique.web.exception;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -12,7 +13,7 @@ public class RouteInvokeException extends RuntimeException {
 
 	private static final long serialVersionUID = 1998063243843477017L;
 
-	private Logger logger = Logger.getLogger(RouteInvokeException.class);
+	private Logger logger = LoggerFactory.getLogger(RouteInvokeException.class);
 	
 	public RouteInvokeException() {
 		throw new IllegalArgumentException("URL参数类型不匹配！");

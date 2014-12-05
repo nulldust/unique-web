@@ -3,7 +3,8 @@ package org.unique.aop;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.unique.aop.annotation.After;
 import org.unique.aop.annotation.Before;
 import org.unique.aop.exception.AdviceMatcherException;
@@ -16,7 +17,7 @@ import org.unique.aop.intercept.MethodInvocation;
  */
 public class AdviceMatcher {
 	
-	private Logger logger = Logger.getLogger(AdviceMatcher.class);
+	private Logger logger = LoggerFactory.getLogger(AdviceMatcher.class);
 	
 	private AbstractMethodInterceptor interceptor;
 	private MethodInvocation invocation;
