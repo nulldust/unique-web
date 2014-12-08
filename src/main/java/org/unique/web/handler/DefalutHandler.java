@@ -5,7 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.unique.web.annotation.Route.HttpMethod;
+import org.unique.web.annotation.Path.HttpMethod;
 import org.unique.web.core.Route;
 import org.unique.web.core.RouteInvocation;
 import org.unique.web.core.RouteMapping;
@@ -96,6 +96,8 @@ public class DefalutHandler implements Handler {
     }
     
     public boolean handle(String target, HttpServletRequest request, HttpServletResponse response) {
+    	target = target.replaceAll("(//)+", "/");
+    	target = target.endsWith("/") ? target.substring(0, target.length() - 1) : target;
     	if(filterStatic(target)){
     		logger.info("reuqest:[" + target + "]");
             return exec(target, request, response);

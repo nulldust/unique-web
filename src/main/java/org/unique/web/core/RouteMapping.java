@@ -16,8 +16,9 @@ import org.unique.commons.utils.StringUtils;
 import org.unique.ioc.AbstractBeanFactory;
 import org.unique.ioc.impl.SingleBean;
 import org.unique.web.annotation.Controller;
-import org.unique.web.annotation.PathVariable;
-import org.unique.web.annotation.Route.HttpMethod;
+import org.unique.web.annotation.Path;
+import org.unique.web.annotation.Path.HttpMethod;
+import org.unique.web.annotation.PathParam;
 import org.unique.web.render.Render;
 
 /**
@@ -60,65 +61,73 @@ public final class RouteMapping {
 			Method[] methods = controller.getMethods();
 			String nameSpace = controller.getAnnotation(Controller.class).value();
 			nameSpace = nameSpace.endsWith("/") ? nameSpace : nameSpace + "/";
-			for (Method method : methods) {
-				
-				org.unique.web.annotation.Route mapping = method.getAnnotation(org.unique.web.annotation.Route.class);
-				
-				//action方法
-				if (isLegalMethod(method) && null != mapping) {
-					
-					// action路径
-					String path = mapping.value().equals("default") ? method.getName() : mapping.value();
-					
-					HttpMethod methodType = mapping.method();
-					
-					String viewPath = (nameSpace +  path).replaceAll("//", "/");
-					String viewReg = viewPath;
-					
-					if(!isLegalAction(viewReg)){
-						warnning(controller, method, " 不合法的action！");
-						continue;
-					}
-					
-					Parameter[] parameters = method.getParameters();
-					
-					Object[] arguments = new Object[parameters.length];
-					int count = 0;
-					
-					if (parameters.length > 0) {
-						for (int i = 0; i < parameters.length; i++) {
-							arguments[i] = parameters[i];
-							if (!parameters[i].getType().equals(R.class)) {
-								if (viewReg.indexOf("$") != -1 && null != parameters[i].getDeclaredAnnotation(PathVariable.class)) {
-									if (parameters[i].getType().equals(Integer.class)) {
-										viewReg = viewReg.replaceFirst("\\$\\d+", "(\\\\d+)");
-									} else {
-										viewReg = viewReg.replaceFirst("\\$\\d+", "(\\\\w+)");
-									}
-									count++;
-								}
-							}
-						}
-					} 
-					if (StringUtils.getCharCount(viewPath, "$") != count) {
-						warnning(controller, method, " 方法参数列表和访问路径的参数个数不匹配！");
-						continue;
-					}
-					viewReg = "^" + viewReg + "$";
-					Route action = new Route(controller, method, arguments, methodType, viewPath);
-					if (null != urlMapping.get(viewReg)) {
-						//throw new RuntimeException(controller.getName() + ", action \"" + viewPath + "\"重复");
-						warnning(controller, method, "action \"" + viewPath + "\"重复");
-					}
-					urlMapping.put(viewReg, action);
-					logger.info("route ：" + viewPath);
-				}
-			}
+			
+			buildRoute(controller, nameSpace, methods);
+			
 		}
 		logger.info("route size ：" + urlMapping.size());
 		return urlMapping;
 	}
-
+	
+	private void buildRoute(Class<?> controller, String nameSpace, Method[] methods){
+		for (Method method : methods) {
+			
+			Path mapping = method.getAnnotation(Path.class);
+			//route方法
+			if (isLegalRoute(method) && null != mapping) {
+				
+				// action路径
+				String path = mapping.value().equals("default") ? method.getName() : mapping.value();
+				
+				HttpMethod methodType = mapping.method();
+				
+				String viewPath = (nameSpace +  path).replaceAll("(//)+", "/");
+				String viewReg = viewPath;
+				
+				if(!isLegalAction(viewReg)){
+					warnning(controller, method, " 不合法的action！");
+					continue;
+				}
+				
+				Parameter[] parameters = method.getParameters();
+				Object[] arguments = new Object[parameters.length];
+				
+				viewReg = buildParam(parameters, arguments, viewReg);
+				
+				// 构建一个路由
+				Route action = new Route(controller, method, arguments, methodType, viewPath);
+				
+				if (null != urlMapping.get(viewReg)) {
+					warnning(controller, method, "route \"" + viewPath + "\"重复");
+				}
+				urlMapping.put(viewReg, action);
+				logger.info("route ：" + viewPath);
+			}
+		}
+	}
+	
+	private String buildParam(Parameter[] parameters, Object[] arguments, String viewReg){
+		if (parameters.length > 0 && viewReg.indexOf(":") != -1) {
+			// 遍历方法内的参数
+			for (int i = 0,len=parameters.length; i < len; i++) {
+				arguments[i] = parameters[i];
+				// 如果有url path参数
+				PathParam pathParam = parameters[i].getDeclaredAnnotation(PathParam.class);
+				if (null != pathParam) {
+					// 存在该参数
+					if(parameters[i].getType().equals(Integer.class)){
+						viewReg = viewReg.replaceFirst("/(:\\w+)", "/(\\\\d+)");
+					}
+					if(parameters[i].getType().equals(String.class)){
+						viewReg = viewReg.replaceFirst("/(:\\w+)", "/(\\\\w+)");
+					}
+				}
+			}
+		}
+		return "^" + viewReg + "$";
+	}
+	
+	
 	/**
 	 * 取得访问修饰符为public的方法集合
 	 * @return 要过滤的方法
@@ -136,11 +145,11 @@ public final class RouteMapping {
 	
 	/**
 	 * 判断action上的映射是否是一个合法的
-	 * @param action 方法注解的value
+	 * @param action 方法注解的value 
 	 * @return boolean
 	 */
 	private boolean isLegalAction(final String action){
-		String regex = "^([0-9a-zA-Z_#&/$=?])+$";
+		String regex = "^([\\w-_#&/:=.;%?])+$";
 		Pattern p = Pattern.compile(regex);
 		Matcher m = p.matcher(action);
 		return m.find();
@@ -151,7 +160,7 @@ public final class RouteMapping {
 	 * @param method 方法
 	 * @return true：合法 false：不合法
 	 */
-	private boolean isLegalMethod(Method method) {
+	private boolean isLegalRoute(Method method) {
 		Set<String> excludedMethod = this.buildExcludedMethodName();
 		if (excludedMethod.contains(method.getName())) {
 			return false;
@@ -162,7 +171,7 @@ public final class RouteMapping {
 		if (Modifier.isPrivate(method.getModifiers())) {
 			return false;
 		}
-		org.unique.web.annotation.Route mapping = method.getAnnotation(org.unique.web.annotation.Route.class);
+		org.unique.web.annotation.Path mapping = method.getAnnotation(org.unique.web.annotation.Path.class);
 		if (null != mapping && mapping.value().length() == 0) {
 			return false;
 		}
@@ -183,23 +192,21 @@ public final class RouteMapping {
 	 * @param url 请求的url
 	 * @return Action对象
 	 */
-	public Route getRoute(String url) {
-		url = url.endsWith("/") ? url.substring(0, url.length() - 1) : url;
-		Route action = urlMapping.get("^" + url + "$");
+	public Route getRoute(String targetPath) {
+		Route action = urlMapping.get(targetPath);
 		if (null == action) {
-			action = urlMapping.get(("^" + url + "/index$").replaceAll("//", "/"));
+			action = urlMapping.get((targetPath + "/index"));
 			if (null == action) {
 				Set<String> mappings = urlMapping.keySet();
 				for (String mapping : mappings) {
 					Pattern p = Pattern.compile(mapping);
-					Matcher m = p.matcher(url);
+					Matcher m = p.matcher(targetPath);
 					if (m.find()) {
 						action = urlMapping.get(mapping);
 						Object[] args = action.getParameters();
-						for (int i = 0; null != args && i < args.length; i++) {
-							if (!args[i].toString().contains(R.class.getName())) {
-								args[i] = parseObject(m.group(i + 1));
-							}
+						for (int i = 0; i < args.length; i++) {
+							String param = targetPath.replaceFirst(mapping, "$" + (i+1));
+							args[i] = parseObject(param);
 						}
 						break;
 					}

@@ -6,9 +6,6 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 import org.unique.aop.AbstractMethodInterceptor;
-import org.unique.aop.AdviceMatcher;
-import org.unique.aop.annotation.After;
-import org.unique.aop.annotation.Before;
 import org.unique.aop.intercept.AbstractMethodInterceptorFactory;
 import org.unique.aop.intercept.MethodInvocation;
 import org.unique.ioc.AbstractBeanFactory;
@@ -16,6 +13,7 @@ import org.unique.ioc.Container;
 import org.unique.ioc.annotation.Autowired;
 import org.unique.ioc.impl.DefaultContainerImpl;
 import org.unique.ioc.impl.SingleBean;
+import org.unique.web.exception.RouteIntercepterException;
 import org.unique.web.exception.RouteInvokeException;
 import org.unique.web.interceptor.AbstractRouteInterceptor;
 
@@ -62,11 +60,13 @@ public class RouteInvocation implements MethodInvocation {
 		AbstractMethodInterceptor interceptor = null;
 		if (interceptorList.size() > 0 && index < interceptorList.size()) {
 			interceptor = interceptorList.get(index++);
-			if (new AdviceMatcher(interceptor, this).match(Before.class, "beforeAdvice")) {
-				interceptor.beforeAdvice(); //     执行前置建议
+			try {
+				result = interceptor.invoke(this);
+			} catch (Throwable e) {
+				throw new RouteIntercepterException(e);
 			}
 			this.proceed();
-			//    执行下一个拦截器
+			//执行下一个拦截器
 		}
 		// 执行真正的方法调用
 		if (!executed) {
@@ -83,15 +83,51 @@ public class RouteInvocation implements MethodInvocation {
 				throw new RouteInvokeException("传递参数异常", e);
 			}
 		}
-		if (index > 0) {
-			interceptor = interceptorList.get(--index);
-			if (new AdviceMatcher(interceptor, this).match(After.class, "afterAdvice")) {
-				interceptor.afterAdvice(); //     执行后置建议
-			}
-		}
 		return result;
 	}
 
+	public Object newInstance(Class<?> clazz){
+	    Object obj = null;
+		try {
+			obj = clazz.newInstance();
+			Field[] fields = obj.getClass().getDeclaredFields();
+			for (Field field : fields) {
+				Autowired autowired = field.getAnnotation(Autowired.class);
+				if (null != autowired) {
+					// 要注入的字段
+					Object wiredField = beanFactory.getBean(field.getType());
+					// 指定装配的类
+					if (autowired.value() != Class.class) {
+						wiredField = beanFactory.getBean(autowired.value());
+						// 容器有该类
+						if (null == wiredField) {
+							wiredField = container.registBean(autowired.value());
+						}
+					} else {
+						// 容器有该类
+						if (null == wiredField) {
+							wiredField = container.registBean(autowired.value());
+						}
+					}
+					if (null == wiredField) {
+						throw new RuntimeException("Unable to load " + field.getType().getCanonicalName() + "！");
+					}
+					boolean accessible = field.isAccessible();
+					field.setAccessible(true);
+					field.set(obj, wiredField);
+					field.setAccessible(accessible);
+				}
+			}
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return obj;
+	}
+	
 	/**
 	 * 创建一个新的实例
 	 * @param clazz 要被修改的class

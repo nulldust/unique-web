@@ -2,7 +2,7 @@ package org.unique.web.core;
 
 import java.lang.reflect.Method;
 
-import org.unique.web.annotation.Route.HttpMethod;
+import org.unique.web.annotation.Path.HttpMethod;
 
 /**
  * 代表请求的Route类
