@@ -27,14 +27,15 @@ import org.unique.web.render.Render;
  * @since 1.0
  */
 public final class RouteMapping {
-
+	
 	private static Logger logger = LoggerFactory.getLogger(RouteMapping.class);
 
-	private Map<String, Route> urlMapping = CollectionUtil.newHashMap();
+	private final Map<String, Route> urlMapping;
 	
 	private final AbstractBeanFactory beanFactory;
 
 	private RouteMapping() {
+		urlMapping = CollectionUtil.newHashMap();
 		beanFactory = new SingleBean();
 	}
 
