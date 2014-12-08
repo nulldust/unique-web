@@ -17,6 +17,7 @@ import org.unique.web.annotation.Controller;
 import org.unique.web.exception.RouteException;
 import org.unique.web.render.Render;
 import org.unique.web.render.RenderFactory;
+import org.unique.web.rest.ResponseBody;
 
 /**
  * http请求处理的工具类
@@ -375,7 +376,23 @@ public final class R {
 	public static void renderJS(final String jsText) {
 		renderFactory.getJavascriptRender(jsText).render(request, response, viewPath);
 	}
-
+	
+	public static void renderJSON(final String jsonText) {
+		renderFactory.getJsonRender(jsonText);
+	}
+	
+	public static void renderJSON(final String key, final String value) {
+		renderFactory.getJsonRender(key, value);
+	}
+	
+	public static void renderJSON(final Object object) {
+		renderFactory.getJsonRender(object);
+	}
+	
+	public static void renderJSON(final String[] attrs) {
+		renderFactory.getJsonRender(attrs);
+	}
+	
 	public static void renderHtml(final String htmlText) {
 		renderFactory.getHtmlRender(htmlText).render(request, response, viewPath);
 	}
@@ -397,6 +414,14 @@ public final class R {
 	
 	public static Render getRender() {
 		return defaultRender;
+	}
+
+	public static ResponseBody response(Object controller, Object data) {
+		Controller controllerAnno = controller.getClass().getAnnotation(Controller.class);
+		if(null != controllerAnno && null != data){
+			
+		}
+		return null;
 	}
 	
 }

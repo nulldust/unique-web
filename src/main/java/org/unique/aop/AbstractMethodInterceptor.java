@@ -21,11 +21,11 @@ public abstract class AbstractMethodInterceptor implements MethodInterceptor {
 	/**
 	 * 前置执行
 	 */
-	public abstract void beforeAdvice();
+	protected abstract void beforeAdvice();
 
 	/**
 	 * 后置执行
 	 */
-	public abstract void afterAdvice();
+	protected abstract void afterAdvice();
 	
 }

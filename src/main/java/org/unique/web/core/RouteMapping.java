@@ -22,7 +22,7 @@ import org.unique.web.annotation.PathParam;
 import org.unique.web.render.Render;
 
 /**
- * actionMapping
+ * 路由映射器
  * @author biezhi
  * @since 1.0
  */
@@ -30,12 +30,12 @@ public final class RouteMapping {
 
 	private static Logger logger = LoggerFactory.getLogger(RouteMapping.class);
 
-	// route mapping
 	private Map<String, Route> urlMapping = CollectionUtil.newHashMap();
 	
-	private AbstractBeanFactory beanFactory = new SingleBean();
+	private final AbstractBeanFactory beanFactory;
 
 	private RouteMapping() {
+		beanFactory = new SingleBean();
 	}
 
 	public static RouteMapping single() {
@@ -43,7 +43,6 @@ public final class RouteMapping {
 	}
 
 	private static class SingleHoder {
-
 		private static final RouteMapping single = new RouteMapping();
 	}
 
@@ -62,6 +61,7 @@ public final class RouteMapping {
 			String nameSpace = controller.getAnnotation(Controller.class).value();
 			nameSpace = nameSpace.endsWith("/") ? nameSpace : nameSpace + "/";
 			
+			//构建路由
 			buildRoute(controller, nameSpace, methods);
 			
 		}
@@ -69,6 +69,12 @@ public final class RouteMapping {
 		return urlMapping;
 	}
 	
+	/**
+	 * 构建路由
+	 * @param controller 	控制器class
+	 * @param nameSpace 	控制器命名空间
+	 * @param methods 		控制器方法
+	 */
 	private void buildRoute(Class<?> controller, String nameSpace, Method[] methods){
 		for (Method method : methods) {
 			
@@ -92,7 +98,8 @@ public final class RouteMapping {
 				Parameter[] parameters = method.getParameters();
 				Object[] arguments = new Object[parameters.length];
 				
-				viewReg = buildParam(parameters, arguments, viewReg);
+				//URL参数构建
+				viewReg = buildParam(parameters, viewReg);
 				
 				// 构建一个路由
 				Route action = new Route(controller, method, arguments, methodType, viewPath);
@@ -106,11 +113,16 @@ public final class RouteMapping {
 		}
 	}
 	
-	private String buildParam(Parameter[] parameters, Object[] arguments, String viewReg){
+	/**
+	 * 构建参数
+	 * @param parameters	参数列表
+	 * @param viewReg		url正则
+	 * @return
+	 */
+	private String buildParam(Parameter[] parameters, String viewReg){
 		if (parameters.length > 0 && viewReg.indexOf(":") != -1) {
 			// 遍历方法内的参数
 			for (int i = 0,len=parameters.length; i < len; i++) {
-				arguments[i] = parameters[i];
 				// 如果有url path参数
 				PathParam pathParam = parameters[i].getDeclaredAnnotation(PathParam.class);
 				if (null != pathParam) {
@@ -145,8 +157,8 @@ public final class RouteMapping {
 	
 	/**
 	 * 判断action上的映射是否是一个合法的
-	 * @param action 方法注解的value 
-	 * @return boolean
+	 * @param action	方法注解的value 
+	 * @return 			boolean
 	 */
 	private boolean isLegalAction(final String action){
 		String regex = "^([\\w-_#&/:=.;%?])+$";
@@ -157,8 +169,8 @@ public final class RouteMapping {
 
 	/**
 	 * 判断是否是一个合法的action请求
-	 * @param method 方法
-	 * @return true：合法 false：不合法
+	 * @param method		方法
+	 * @return				true：合法 false：不合法
 	 */
 	private boolean isLegalRoute(Method method) {
 		Set<String> excludedMethod = this.buildExcludedMethodName();
@@ -189,8 +201,8 @@ public final class RouteMapping {
 	
 	/**
 	 * 根据url获取Action
-	 * @param url 请求的url
-	 * @return Action对象
+	 * @param url		请求的url
+	 * @return Action	对象
 	 */
 	public Route getRoute(String targetPath) {
 		Route action = urlMapping.get(targetPath);
@@ -218,8 +230,8 @@ public final class RouteMapping {
 	
 	/**
 	 * 字符串转对象
-	 * @param param 字符串参数
-	 * @return Object对象
+	 * @param param		字符串参数
+	 * @return Object	对象
 	 */
 	private Object parseObject(final String param) {
 		if (StringUtils.isNumeric(param)) {

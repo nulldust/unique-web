@@ -18,6 +18,10 @@ public @interface Path {
 	    ALL, GET, POST, PUT, PATCH, DELETE, HEAD, TRACE, CONNECT, OPTIONS, BEFORE, AFTER
 	};
 	
+	public enum ResponseType{ 
+	    XML, JSON, HTML
+	};
+	
 	/**
 	 * 请求url
 	 * @return 请求url
@@ -29,5 +33,7 @@ public @interface Path {
 	 * @return 请求类型
 	 */
 	HttpMethod method() default HttpMethod.ALL;
+	
+	ResponseType response() default ResponseType.HTML;
 	
 }

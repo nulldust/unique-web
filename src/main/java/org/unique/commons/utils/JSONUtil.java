@@ -51,9 +51,9 @@ public class JSONUtil {
 	}
 	
 	/**
+	 * bean转json
 	 * @param bean
-	 *            bean瀵硅薄
-	 * @return String
+	 * @return
 	 */
 	public static String beanToJSON(Object bean) {
 		StringBuilder json = new StringBuilder();

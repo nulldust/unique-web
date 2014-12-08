@@ -34,10 +34,13 @@ import org.unique.web.listener.WebInitContextListener;
  * @author biezhi
  * @since 1.0
  */
-public final class Unique {
+public final class Unique{
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Unique.class);
-
+	
+	/**
+	 * hanler
+	 */
 	private Handler handler;
 	
 	/**
@@ -232,31 +235,36 @@ public final class Unique {
 		}
 		Set<Class<?>> classes = classReader.getClass(pack, true);
 		for (Class<?> clazz : classes) {
-			// 是一个控制器，为他添加系统的路由拦截器
-			if(null != clazz.getAnnotation(Controller.class)){
-				container.registBean(clazz);
-				continue;
-			}
-			
-			if(null != clazz.getSuperclass()){
-				// 是一个路由拦截器
-				if(clazz.getSuperclass().equals(AbstractRouteInterceptor.class)){
-					addRouteInterceptor(clazz);
-					continue;
-				}
-				// 是一个普通拦截器
-				if(clazz.getSuperclass().equals(AbstractMethodInterceptor.class)){
-					addInterceptor(clazz);
-					continue;
-				}
-			}
-			// 注册带有Component和Service注解的类
-			if (container.isRegister(clazz.getAnnotations())) {
-				container.registBean(clazz);
-			}
+			addClass(clazz);
 		}
 		// 初始化注入
 		container.initWired();
+	}
+	
+	/**
+	 * 注册class
+	 * @param clazz
+	 */
+	private void addClass(Class<?> clazz){
+		// 是一个控制器，为他添加系统的路由拦截器
+		if(null != clazz.getAnnotation(Controller.class)){
+			container.registBean(clazz);
+			return;
+		}
+		if(null != clazz.getSuperclass()){
+			if(clazz.getSuperclass().equals(AbstractRouteInterceptor.class)){
+				addRouteInterceptor(clazz);
+				return;
+			}
+			if(clazz.getSuperclass().equals(AbstractMethodInterceptor.class)){
+				addInterceptor(clazz);
+				return;
+			}
+		}
+		// 注册带有Component和Service注解的类
+		if (container.isRegister(clazz.getAnnotations())) {
+			container.registBean(clazz);
+		}
 	}
 	
 	/**

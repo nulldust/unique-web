@@ -4,6 +4,7 @@ import org.unique.Const;
 import org.unique.web.render.impl.ErrorRender;
 import org.unique.web.render.impl.HtmlRender;
 import org.unique.web.render.impl.JavascriptRender;
+import org.unique.web.render.impl.JsonRender;
 import org.unique.web.render.impl.JspRender;
 import org.unique.web.render.impl.RedirectRender;
 import org.unique.web.render.impl.TextRender;
@@ -66,7 +67,23 @@ public class RenderFactory {
     public Render getJavascriptRender(String jsText) {
         return new JavascriptRender(jsText);
     }
+    
+    public Render getJsonRender(String jsonText) {
+        return new JsonRender(jsonText);
+    }
 
+    public Render getJsonRender(String key, String value) {
+        return new JsonRender(key, value);
+    }
+    
+    public Render getJsonRender(Object object) {
+        return new JsonRender(object);
+    }
+    
+    public Render getJsonRender(String[] attrs) {
+        return new JsonRender(attrs);
+    }
+    
     public Render getHtmlRender(String htmlText) {
         return new HtmlRender(htmlText);
     }
