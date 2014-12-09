@@ -38,6 +38,7 @@ public class JarReaderImpl extends AbstractClassReader implements ClassReader {
 
 	@Override
 	public Set<Class<?>> getClassByAnnotation(String packageName, Class<?> parent, Class<? extends Annotation> annotation, boolean recursive) {
+		System.out.println("走jar");
 		Validate.notBlank(packageName);
 		Set<Class<?>> classes = CollectionUtil.newHashSet();
         // 获取包的名字 并进行替换
@@ -50,7 +51,7 @@ public class JarReaderImpl extends AbstractClassReader implements ClassReader {
             while (dirs.hasMoreElements()) {
                 // 获取下一个元素
                 URL url = dirs.nextElement();
-				Set<Class<?>> subClasses = getClasses(url, packageDirName, packageName, parent, annotation, recursive, classes);
+				Set<Class<?>> subClasses = this.getClasses(url, packageDirName, packageName, parent, annotation, recursive, classes);
 				if(subClasses.size() > 0){
 					classes.addAll(subClasses);
 				}
@@ -60,10 +61,11 @@ public class JarReaderImpl extends AbstractClassReader implements ClassReader {
         }
         return classes;
 	}
-
+	
 	private Set<Class<?>> getClasses(final URL url, final String packageDirName, String packageName, final Class<?> parent, 
 			final Class<? extends Annotation> annotation, final boolean recursive, Set<Class<?>> classes){
 		JarFile jar = null;
+		System.out.println("parent:" + parent);
 		try {
 			// 获取jar
 			jar = ((JarURLConnection) url.openConnection()).getJarFile();
@@ -95,7 +97,27 @@ public class JarReaderImpl extends AbstractClassReader implements ClassReader {
 							String className = name.substring(packageName.length() + 1, name.length() - 6);
 							try {
 								// 添加到classes
-								classes.add(Class.forName(packageName + '.' + className));
+								Class<?> clazz = Class.forName(packageName + '.' + className);
+								if(null != parent && null != annotation){
+		                    		if(null != clazz.getSuperclass() && 
+		                    			clazz.getSuperclass().equals(parent) && null != clazz.getAnnotation(annotation)){
+		                    			classes.add(clazz);
+		                    		}
+		                    		continue;
+		                    	}
+		                    	if(null != parent){
+		                    		if(null != clazz.getSuperclass() && clazz.getSuperclass().equals(parent)){
+		                    			classes.add(clazz);
+		                    		}
+		                    		continue;
+		                    	}
+		                    	if(null != annotation){
+		                    		if(null != clazz.getAnnotation(annotation)){
+		                    			classes.add(clazz);
+		                    		}
+		                    		continue;
+		                    	}
+		                        classes.add(clazz);
 							} catch (ClassNotFoundException e) {
 								LOGGER.error("添加用户自定义视图类错误 找不到此类的.class文件");
 								throw new ClassReaderException(e);

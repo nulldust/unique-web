@@ -61,17 +61,24 @@ public abstract class AbstractClassReader implements ClassReader {
                     String className = file.getName().substring(0, file.getName().length() - 6);
                     try {
                     	Class<?> clazz = Class.forName(packageName + '.' + className);
+                    	if(null != parent && null != annotation){
+                    		if(null != clazz.getSuperclass() && clazz.getSuperclass().equals(parent) && 
+                    				null != clazz.getAnnotation(annotation)){
+                    			classes.add(clazz);
+                    		}
+                    		continue;
+                    	}
                     	if(null != parent){
                     		if(null != clazz.getSuperclass() && clazz.getSuperclass().equals(parent)){
                     			classes.add(clazz);
-                    			continue;
                     		}
+                    		continue;
                     	}
                     	if(null != annotation){
                     		if(null != clazz.getAnnotation(annotation)){
                     			classes.add(clazz);
-                    			continue;
                     		}
+                    		continue;
                     	}
                         classes.add(clazz);
                     } catch (ClassNotFoundException e) {
@@ -106,6 +113,7 @@ public abstract class AbstractClassReader implements ClassReader {
 
 	@Override
 	public Set<Class<?>> getClassByAnnotation(String packageName, Class<?> parent, Class<? extends Annotation> annotation, boolean recursive) {
+		System.out.println("走默认");
 		Validate.notBlank(packageName);
 		Set<Class<?>> classes = CollectionUtil.newHashSet();
         // 获取包的名字 并进行替换
