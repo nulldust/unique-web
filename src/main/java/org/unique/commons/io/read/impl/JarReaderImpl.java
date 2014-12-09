@@ -50,7 +50,7 @@ public class JarReaderImpl extends AbstractClassReader implements ClassReader {
             while (dirs.hasMoreElements()) {
                 // 获取下一个元素
                 URL url = dirs.nextElement();
-				Set<Class<?>> subClasses = getClasses(url, packageName, packageName, parent, annotation, recursive, classes);
+				Set<Class<?>> subClasses = getClasses(url, packageDirName, packageName, parent, annotation, recursive, classes);
 				if(subClasses.size() > 0){
 					classes.addAll(subClasses);
 				}

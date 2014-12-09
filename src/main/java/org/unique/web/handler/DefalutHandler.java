@@ -23,9 +23,11 @@ public class DefalutHandler implements Handler {
 	protected final RouteMapping actionMapping = RouteMapping.single();
 
     protected static final RenderFactory renderFactory = RenderFactory.single();
-
+    
     private Logger logger = LoggerFactory.getLogger(DefalutHandler.class);
-
+    
+    private static Render render;
+    
     @Deprecated
     public DefalutHandler() {
     }
@@ -72,7 +74,10 @@ public class DefalutHandler implements Handler {
             if(null != result && result instanceof String){
             	nameSpace = nameSpace.startsWith("/") ? nameSpace.substring(1) : nameSpace;
             	String viewPath = nameSpace + result;
-            	renderFactory.getDefaultRender().render(request, response, viewPath);
+            	if(null == render){
+            		render = renderFactory.getDefaultRender();
+            	}
+            	render.render(request, response, viewPath);
             }
             return true;
         } catch (RouteException e) {

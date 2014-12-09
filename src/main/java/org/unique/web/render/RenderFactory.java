@@ -40,11 +40,9 @@ public class RenderFactory {
     }
 
     public Render getDefaultRender() {
-        if (Const.RENDER_TYPE.equalsIgnoreCase("jsp")) {
-        	if(null == this.render){
-        		this.render = new JspRender();
-        	}
-        }
+    	if(null == this.render){
+    		this.render = new JspRender();
+    	}
         return this.render;
     }
     

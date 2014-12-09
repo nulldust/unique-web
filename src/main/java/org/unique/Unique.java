@@ -131,9 +131,6 @@ public final class Unique{
 		if(Const.getConfig("unique.encoding").trim().length() > 0){
 			Const.ENCODING = Const.getConfig("unique.encoding").trim();
 		}
-		if(Const.getConfig("unique.view.type").trim().length() > 0){
-			Const.RENDER_TYPE = Const.getConfig("unique.view.type").trim();
-		}
 	}
 	/**
 	 * 初始化第三方增强
