@@ -41,7 +41,7 @@ Unique-Web
 
 + Email(biezhi.me@gmail.com)
 + QQ: 921293209
-+ weibo: (http://weibo.com/u/5238733773)
++ weibo: http://weibo.com/u/5238733773
 + oschina: http://my.oschina.net/biezhi
 
 ##加入开源队伍
