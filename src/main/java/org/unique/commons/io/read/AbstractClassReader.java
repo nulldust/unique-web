@@ -113,7 +113,6 @@ public abstract class AbstractClassReader implements ClassReader {
 
 	@Override
 	public Set<Class<?>> getClassByAnnotation(String packageName, Class<?> parent, Class<? extends Annotation> annotation, boolean recursive) {
-		System.out.println("走默认");
 		Validate.notBlank(packageName);
 		Set<Class<?>> classes = CollectionUtil.newHashSet();
         // 获取包的名字 并进行替换

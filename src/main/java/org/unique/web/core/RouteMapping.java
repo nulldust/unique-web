@@ -109,7 +109,7 @@ public final class RouteMapping {
 					warnning(controller, method, "route \"" + viewPath + "\"重复");
 				}
 				urlMapping.put(viewReg, action);
-				logger.info("route ：" + viewPath);
+				logger.info("route:" + viewPath);
 			}
 		}
 	}

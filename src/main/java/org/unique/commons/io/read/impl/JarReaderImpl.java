@@ -38,7 +38,6 @@ public class JarReaderImpl extends AbstractClassReader implements ClassReader {
 
 	@Override
 	public Set<Class<?>> getClassByAnnotation(String packageName, Class<?> parent, Class<? extends Annotation> annotation, boolean recursive) {
-		System.out.println("走jar");
 		Validate.notBlank(packageName);
 		Set<Class<?>> classes = CollectionUtil.newHashSet();
         // 获取包的名字 并进行替换
@@ -65,7 +64,6 @@ public class JarReaderImpl extends AbstractClassReader implements ClassReader {
 	private Set<Class<?>> getClasses(final URL url, final String packageDirName, String packageName, final Class<?> parent, 
 			final Class<? extends Annotation> annotation, final boolean recursive, Set<Class<?>> classes){
 		JarFile jar = null;
-		System.out.println("parent:" + parent);
 		try {
 			// 获取jar
 			jar = ((JarURLConnection) url.openConnection()).getJarFile();
