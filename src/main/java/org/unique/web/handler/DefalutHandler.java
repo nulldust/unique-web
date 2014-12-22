@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.unique.Const;
 import org.unique.web.annotation.Path.HttpMethod;
 import org.unique.web.core.Route;
 import org.unique.web.core.RouteInvocation;
@@ -36,23 +37,20 @@ public class DefalutHandler implements Handler {
     	return new DefalutHandler();
     }
 
-    public boolean filterStatic(String target){
-    	if(target.endsWith("/")){
-    		target = target.substring(0, target.length() - 1);
-		}
+    public String filterStatic(String target){
     	// 伪静态
-		if(target.endsWith(Render.suffix)){
-			target = target.substring(0, target.length() - Render.suffix.length());
+		if(target.endsWith(Const.ROUTE_SUFFIX)){
+			target = target.substring(0, target.length() - Const.ROUTE_SUFFIX.length());
 		} else{
 			// 不处理静态资源
 			if (target.indexOf(".") != -1) {
-	            return false;
+	            return null;
 	        }
 		}
-		return true;
+		return target;
     } 
     
-    public boolean exec(String target, HttpServletRequest request, HttpServletResponse response){
+    private boolean exec(String target, HttpServletRequest request, HttpServletResponse response){
     	// 获取路由
     	Route route = actionMapping.getRoute(target);
         
@@ -102,8 +100,12 @@ public class DefalutHandler implements Handler {
     
     public boolean handle(String target, HttpServletRequest request, HttpServletResponse response) {
     	target = target.replaceAll("(//)+", "/");
-    	target = target.endsWith("/") ? target.substring(0, target.length() - 1) : target;
-    	if(filterStatic(target)){
+    	
+    	if(!target.equals("/")){
+    		target = target.endsWith("/") ? target.substring(0, target.length() - 1) : target;
+    	}
+    	target = filterStatic(target);
+    	if(null != target){
     		logger.info("reuqest:[" + target + "]");
             return exec(target, request, response);
 		}
