@@ -137,7 +137,8 @@ public final class RouteMapping {
 				}
 			}
 		}
-		return "^" + viewReg + "$";
+		//return "^" + viewReg + "$";
+		return viewReg;
 	}
 	
 	
@@ -208,17 +209,18 @@ public final class RouteMapping {
 	public Route getRoute(String targetPath) {
 		Route action = urlMapping.get(targetPath);
 		if (null == action) {
-			action = urlMapping.get((targetPath + "/index"));
+			String indexTarget = targetPath.endsWith("/") ? targetPath + "index" : targetPath + "/index";
+			action = urlMapping.get(indexTarget);
 			if (null == action) {
 				Set<String> mappings = urlMapping.keySet();
 				for (String mapping : mappings) {
-					Pattern p = Pattern.compile(mapping);
+					Pattern p = Pattern.compile("^" + mapping + "$");
 					Matcher m = p.matcher(targetPath);
 					if (m.find()) {
 						action = urlMapping.get(mapping);
 						Object[] args = action.getParameters();
 						for (int i = 0; i < args.length; i++) {
-							String param = targetPath.replaceFirst(mapping, "$" + (i+1));
+							String param = targetPath.replaceFirst(mapping, "$" + (i + 1));
 							args[i] = parseObject(param);
 						}
 						break;
