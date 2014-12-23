@@ -20,7 +20,7 @@ import org.unique.web.render.RenderFactory;
 import org.unique.web.rest.ResponseBody;
 
 /**
- * http请求处理的工具类
+ * 处理http请求的工具类
  * @author biezhi
  * @since 1.0
  */
@@ -33,6 +33,9 @@ public final class R {
 	private static String viewPath;
 	private static final RenderFactory renderFactory = RenderFactory.single();
 
+	private R() {
+	}
+	
 	public static void put(HttpServletRequest request_, HttpServletResponse response_){
 		request = request_;
 		response = response_;
@@ -113,7 +116,7 @@ public final class R {
 		String result = request.getParameter(name);
 		return result != null && !"".equals(result) ? result : defaultValue;
 	}
-
+	
 	public static Map<String, String[]> getParaMap() {
 		return request.getParameterMap();
 	}
