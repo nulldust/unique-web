@@ -14,8 +14,8 @@ import org.slf4j.LoggerFactory;
 import org.unique.aop.AbstractMethodInterceptor;
 import org.unique.aop.ProxyBeanFactory;
 import org.unique.aop.intercept.AbstractMethodInterceptorFactory;
+import org.unique.commons.utils.CloneUtil;
 import org.unique.commons.utils.CollectionUtil;
-import org.unique.commons.utils.PrototypeUtil;
 import org.unique.ioc.Container;
 import org.unique.ioc.Scope;
 import org.unique.ioc.annotation.Autowired;
@@ -59,8 +59,12 @@ public class DefaultContainerImpl implements Container {
     @Override
     public Object getBean(String name, Scope scope) {
     	Object obj = beansMap.get(name);
-    	if(null != obj && scope == Scope.PROTOTYPE){
-    		return PrototypeUtil.deepClone(obj);
+    	if(null != scope && scope == Scope.PROTOTYPE){
+    		try {
+				return CloneUtil.deepClone(obj);
+			} catch (Exception e) {
+				logger.error("克隆对象失败," + e.getMessage());
+			}
     	}
         return obj;
     }
@@ -71,7 +75,15 @@ public class DefaultContainerImpl implements Container {
         while (it.hasNext()) {
             Object obj = it.next();
             if (type.isAssignableFrom(obj.getClass())) {
-                return obj;
+            	if(null != scope && scope == Scope.PROTOTYPE){
+            		try {
+						return CloneUtil.deepClone(obj);
+					} catch (Exception e) {
+						logger.error("克隆对象失败," + e.getMessage());
+					}
+            	} else {
+            		return obj;
+				}
             }
         }
         return null;
