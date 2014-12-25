@@ -45,11 +45,6 @@ public final class Const{
 	 */
 	public static String ENCODING = "UTF-8";
 	
-	/**
-	 * 默认请求后缀
-	 */
-	public static String ROUTE_SUFFIX = ".do";
-	
 	private Const() {
 	}
 	

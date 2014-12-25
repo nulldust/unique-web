@@ -57,7 +57,14 @@ public class PropUtil {
 			Iterator<Map.Entry<Object, Object>> it = set.iterator();
 			while (it.hasNext()) {
 				Entry<Object, Object> entry = it.next();
-				map.put(entry.getKey().toString(), entry.getValue().toString());
+				String key = entry.getKey().toString();
+				String value = entry.getValue().toString();
+				String fuKey = getWildcard(value);
+				if(null != fuKey && null != prop.get(fuKey)){
+					String fuValue = prop.get(fuKey).toString();
+					value = value.replaceAll("\\$\\{" + fuKey + "\\}", fuValue);
+				}
+				map.put(key, value);
 			}
 			logger.info("加载properties文件[" + resourceName + "]");
 		} catch (IOException e) {
@@ -66,6 +73,17 @@ public class PropUtil {
 			IOUtil.closeQuietly(in);
 		}
 		return map;
+	}
+	
+	private static String getWildcard(String str){
+		if(null != str && str.indexOf("${") != -1){
+			int start = str.indexOf("${");
+			int end = str.indexOf("}");
+			if(start != -1 && end != -1){
+				return str.substring(start + 2, end);
+			}
+		}
+		return null;
 	}
 
 	/**

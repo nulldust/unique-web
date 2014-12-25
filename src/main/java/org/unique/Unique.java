@@ -90,16 +90,7 @@ public final class Unique{
 	 */
 	public boolean init(String config_path, String route_suffix) {
 		
-		if(StringUtils.isNotBlank(route_suffix)){
-			Const.ROUTE_SUFFIX = route_suffix;
-		}
-		
-		if(StringUtils.isNotBlank(config_path)){
-			Const.CUSTOM_CONFIG = config_path;
-		}
-		
-		// 初始化配置文件
-		initConst();
+		initConst(config_path);
 		
 		// 初始化IOC容器
 		initIOC();
@@ -122,10 +113,16 @@ public final class Unique{
 	/**
 	 * 初始化常量
 	 */
-	private void initConst(){
-		// 加载默认配置文件
+	private void initConst(String config_path){
+		
+		if(StringUtils.isNotBlank(config_path)){
+			Const.CUSTOM_CONFIG = config_path;
+		}
+		// 加载系统配置文件
 		Map<String, String> defaultCfg = PropUtil.getPropertyMap(Const.DEFAULT_CONFIG);
+		// 加载用户配置文件
 		defaultCfg.putAll(PropUtil.getPropertyMap(Const.CUSTOM_CONFIG));
+		// 保存常量
 		Const.putAllConst(defaultCfg);
 		defaultCfg = null;
 		if(Const.getConfig("unique.encoding").trim().length() > 0){
