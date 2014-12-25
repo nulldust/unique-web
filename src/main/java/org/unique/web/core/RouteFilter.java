@@ -53,7 +53,6 @@ public class RouteFilter implements Filter {
 			handler = unique.getHandler();
 			long time = (System.currentTimeMillis() - start);
 			logger.info("Root WebApplicationContext: 初始化耗费时长：" + time + " ms");
-			logger.info("unique-web初始化完成!");
 		}
 	}
 
