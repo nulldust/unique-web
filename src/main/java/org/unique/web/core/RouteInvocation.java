@@ -84,7 +84,7 @@ public class RouteInvocation implements MethodInvocation {
 			//执行下一个拦截器
 		}
 		// 执行真正的方法调用
-		if (!executed) {
+		if (!executed && null == result) {
 			executed = true;
 			Object controller = beanFactory.getBean(controllerClass);
 			controller = newInstance(controller);
