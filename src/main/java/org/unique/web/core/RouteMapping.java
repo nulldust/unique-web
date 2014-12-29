@@ -31,9 +31,8 @@ import org.unique.commons.utils.StringUtils;
 import org.unique.ioc.AbstractBeanFactory;
 import org.unique.ioc.impl.SingleBean;
 import org.unique.web.annotation.Controller;
-import org.unique.web.annotation.Path;
-import org.unique.web.annotation.Path.HttpMethod;
 import org.unique.web.annotation.PathParam;
+import org.unique.web.annotation.Route.HttpMethod;
 import org.unique.web.render.Render;
 
 /**
@@ -94,7 +93,7 @@ public final class RouteMapping {
 	private void buildRoute(Class<?> controller, String nameSpace, Method[] methods){
 		for (Method method : methods) {
 			
-			Path mapping = method.getAnnotation(Path.class);
+			org.unique.web.annotation.Route mapping = method.getAnnotation(org.unique.web.annotation.Route.class);
 			//route方法
 			if (isLegalRoute(method) && null != mapping) {
 				
@@ -200,7 +199,7 @@ public final class RouteMapping {
 		if (Modifier.isPrivate(method.getModifiers())) {
 			return false;
 		}
-		org.unique.web.annotation.Path mapping = method.getAnnotation(org.unique.web.annotation.Path.class);
+		org.unique.web.annotation.Route mapping = method.getAnnotation(org.unique.web.annotation.Route.class);
 		if (null != mapping && mapping.value().length() == 0) {
 			return false;
 		}

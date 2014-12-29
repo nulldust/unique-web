@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.unique.web.annotation.Path.HttpMethod;
+import org.unique.web.annotation.Route.HttpMethod;
 import org.unique.web.core.Route;
 import org.unique.web.core.RouteInvocation;
 import org.unique.web.core.RouteMapping;
