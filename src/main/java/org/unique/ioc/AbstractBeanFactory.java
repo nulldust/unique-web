@@ -30,14 +30,12 @@ public abstract class AbstractBeanFactory {
 	
 	public abstract Object getBean(Class<?> clazz);
 	
-	public boolean setBean(Class<?> clazz, Object object){
-		if(null != clazz.getInterfaces()){
-			for(Class<?> interface_ : clazz.getInterfaces()){
-				this.setBean(interface_, object);
-			}
+	public boolean resetBean(Class<?> clazz, Object object){
+		System.out.println("resetBean object=" + object);
+		if(null != clazz.getInterfaces() && null != object){
+			container.removeBean(clazz);
+			container.getBeanMap().put(clazz.getName(), object);
 		}
-		container.removeBean(clazz);
-		container.getBeanMap().put(clazz.getName(), object);
 		return true;
 	}
 	

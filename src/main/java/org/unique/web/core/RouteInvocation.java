@@ -171,11 +171,12 @@ public class RouteInvocation implements MethodInvocation {
 					}
 					if (null == wiredField) {
 						throw new RuntimeException("Unable to load " + field.getType().getCanonicalName() + "！");
+					} else {
+						boolean accessible = field.isAccessible();
+						field.setAccessible(true);
+						field.set(obj, wiredField);
+						field.setAccessible(accessible);
 					}
-					boolean accessible = field.isAccessible();
-					field.setAccessible(true);
-					field.set(obj, wiredField);
-					field.setAccessible(accessible);
 				}
 			}
 			return obj;

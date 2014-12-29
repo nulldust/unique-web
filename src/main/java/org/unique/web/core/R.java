@@ -15,6 +15,7 @@
  */
 package org.unique.web.core;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.Enumeration;
@@ -415,8 +416,31 @@ public final class R {
 		renderFactory.getHtmlRender(htmlText).render(request, response, viewPath);
 	}
 
-	public static void redirect(final String url) {
-		renderFactory.getRedirectRender(url).render(request, response, viewPath);
+	/**
+	 * 站点内跳转
+	 * @param url
+	 */
+	public static void redirect(String url) {
+		try {
+			String contextPath = request.getContextPath();
+			url = contextPath + url;
+			response.sendRedirect(url);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * 外部站点跳转
+	 * @param url
+	 */
+	public static void redirectURL(final String url) {
+		try {
+			response.sendRedirect(url);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		//renderFactory.getRedirectRender(url).render(request, response, viewPath);
 	}
 
 	public static void redirect(Object object, final String url) {
