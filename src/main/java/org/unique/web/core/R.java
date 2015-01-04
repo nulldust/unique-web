@@ -16,6 +16,7 @@
 package org.unique.web.core;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.Enumeration;
@@ -28,6 +29,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.unique.Const;
 import org.unique.commons.utils.StringUtils;
 import org.unique.web.annotation.Controller;
 import org.unique.web.exception.RouteException;
@@ -55,6 +57,12 @@ public final class R {
 	public static void put(HttpServletRequest request_, HttpServletResponse response_){
 		request = request_;
 		response = response_;
+		try {
+			request.setCharacterEncoding(Const.ENCODING);
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		response.setCharacterEncoding(Const.ENCODING);
 	}
 	
 	/**
@@ -397,19 +405,23 @@ public final class R {
 	}
 	
 	public static void renderJSON(final String jsonText) {
-		renderFactory.getJsonRender(jsonText);
+		renderFactory.getJsonRender(jsonText).render(request, response, null);
+	}
+	
+	public static void renderJSON(final String key, final Object value) {
+		renderFactory.getJsonRender(key, value).render(request, response, null);
 	}
 	
 	public static void renderJSON(final String key, final String value) {
-		renderFactory.getJsonRender(key, value);
+		renderFactory.getJsonRender(key, value).render(request, response, null);
 	}
 	
 	public static void renderJSON(final Object object) {
-		renderFactory.getJsonRender(object);
+		renderFactory.getJsonRender(object).render(request, response, null);
 	}
 	
 	public static void renderJSON(final String[] attrs) {
-		renderFactory.getJsonRender(attrs);
+		renderFactory.getJsonRender(attrs).render(request, response, null);
 	}
 	
 	public static void renderHtml(final String htmlText) {

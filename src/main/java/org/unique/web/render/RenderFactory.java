@@ -89,6 +89,10 @@ public class RenderFactory {
         return new JsonRender(key, value);
     }
     
+    public Render getJsonRender(String key, Object value) {
+        return new JsonRender(key, value);
+    }
+    
     public Render getJsonRender(Object object) {
         return new JsonRender(object);
     }

@@ -43,6 +43,7 @@ public class JspRender implements Render {
 				url = prefix + viewPath;
 			}
 			url = url.replaceAll("//", "/");
+			request.setCharacterEncoding(Const.ENCODING);
 			response.setCharacterEncoding(Const.ENCODING);
 			request.getRequestDispatcher(url).forward(request, response);
 		} catch (Exception e) {
