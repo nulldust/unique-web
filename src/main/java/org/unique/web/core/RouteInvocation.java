@@ -100,48 +100,6 @@ public class RouteInvocation implements MethodInvocation {
 		}
 		return result;
 	}
-
-	public Object newInstance(Class<?> clazz){
-	    Object obj = null;
-		try {
-			obj = clazz.newInstance();
-			Field[] fields = obj.getClass().getDeclaredFields();
-			for (Field field : fields) {
-				Autowired autowired = field.getAnnotation(Autowired.class);
-				if (null != autowired) {
-					// 要注入的字段
-					Object wiredField = beanFactory.getBean(field.getType());
-					// 指定装配的类
-					if (autowired.value() != Class.class) {
-						wiredField = beanFactory.getBean(autowired.value());
-						// 容器有该类
-						if (null == wiredField) {
-							wiredField = container.registBean(autowired.value());
-						}
-					} else {
-						// 容器有该类
-						if (null == wiredField) {
-							wiredField = container.registBean(autowired.value());
-						}
-					}
-					if (null == wiredField) {
-						throw new RuntimeException("Unable to load " + field.getType().getCanonicalName() + "！");
-					}
-					boolean accessible = field.isAccessible();
-					field.setAccessible(true);
-					field.set(obj, wiredField);
-					field.setAccessible(accessible);
-				}
-			}
-		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return obj;
-	}
 	
 	/**
 	 * 创建一个新的实例
