@@ -22,6 +22,22 @@ import java.lang.annotation.Target;
 
 /**
  * 方法上定义的路由注解
+ * 
+
+Restful routes:
+<pre>
+==========================================================================================
+verb    path                   action          used for
+==========================================================================================
+GET     /books                 index 	       display a list of all books
+GET     /books/new_form        new_form        return an HTML form for creating a new book
+POST    /books                 create 	       create a new book
+GET     /books/id              show            display a specific book
+GET     /books/id/edit_form    edit_form       return an HTML form for editing a books
+PUT     /books/id              update          update a specific book
+DELETE 	/books/id              destroy         delete a specific book
+</pre>
+
  * @author biezhi
  * @since 1.0
  */
@@ -30,7 +46,7 @@ import java.lang.annotation.Target;
 public @interface Route {
 	
 	public enum HttpMethod{ 
-	    ALL, GET, POST, PUT, PATCH, DELETE, HEAD, TRACE, CONNECT, OPTIONS, BEFORE, AFTER
+	    ALL, GET, POST, PUT, DELETE
 	};
 	
 	public enum ResponseType{ 
