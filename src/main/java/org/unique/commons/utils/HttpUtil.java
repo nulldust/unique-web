@@ -115,7 +115,7 @@ public class HttpUtil {
 	/**
 	 * get请求
 	 */
-	public static String get(String url, Map<String, String> params, Map<String, String> headers) {
+	public static String get(String url, Map<String, String> params, Map<String, String> headers, String charset) {
 		StringBuffer bufferRes = null;
 		try {
 			HttpURLConnection http = null;
@@ -124,8 +124,12 @@ public class HttpUtil {
 			} else {
 				http = initHttp(initParams(url, params), _GET, headers);
 			}
+			
+			charset = (null == charset) ? DEFAULT_CHARSET : charset;
+			
 			InputStream in = http.getInputStream();
-			BufferedReader read = new BufferedReader(new InputStreamReader(in, DEFAULT_CHARSET));
+			
+			BufferedReader read = new BufferedReader(new InputStreamReader(in, charset));
 			String valueString = null;
 			bufferRes = new StringBuffer();
 			while ((valueString = read.readLine()) != null) {
@@ -145,21 +149,21 @@ public class HttpUtil {
 	/**
 	 * get请求
 	 */
-	public static String get(String url) {
-		return get(url, null);
+	public static String get(String url, String charset) {
+		return get(url, null, charset);
 	}
-
+	
 	/**
 	 * get请求
 	 */
-	public static String get(String url, Map<String, String> params) {
-		return get(url, params, null);
+	public static String get(String url, Map<String, String> headers, String charset) {
+		return get(url, null, headers, charset);
 	}
-
+	
 	/**
 	 * post请求
 	 */
-	public static String post(String url, String params, Map<String, String> headers) {
+	public static String post(String url, String params, Map<String, String> headers, String charset) {
 		StringBuffer bufferRes = null;
 		try {
 			HttpURLConnection http = null;
@@ -168,13 +172,16 @@ public class HttpUtil {
 			} else {
 				http = initHttp(url, _POST, headers);
 			}
+			charset = (null == charset) ? DEFAULT_CHARSET : charset;
+			
 			OutputStream out = http.getOutputStream();
-			out.write(params.getBytes(DEFAULT_CHARSET));
+			out.write(params.getBytes(charset));
 			out.flush();
 			out.close();
 
 			InputStream in = http.getInputStream();
-			BufferedReader read = new BufferedReader(new InputStreamReader(in, DEFAULT_CHARSET));
+			
+			BufferedReader read = new BufferedReader(new InputStreamReader(in, charset));
 			String valueString = null;
 			bufferRes = new StringBuffer();
 			while ((valueString = read.readLine()) != null) {
@@ -194,15 +201,15 @@ public class HttpUtil {
 	/**
 	 * post请求
 	 */
-	public static String post(String url, Map<String, String> params) {
-		return post(url, map2Url(params), null);
+	public static String post(String url, Map<String, String> params, String charset) {
+		return post(url, map2Url(params), null, charset);
 	}
 
 	/**
 	 * post请求
 	 */
-	public static String post(String url, Map<String, String> params, Map<String, String> headers) {
-		return post(url, map2Url(params), headers);
+	public static String post(String url, Map<String, String> params, Map<String, String> headers, String charset) {
+		return post(url, map2Url(params), headers, charset);
 	}
 
 	/**

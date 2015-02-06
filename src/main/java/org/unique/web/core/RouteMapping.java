@@ -70,15 +70,17 @@ public final class RouteMapping {
 		//所有控制器
 		List<Class<?>> controllerList = beanFactory.getClassesByAnnotation(Controller.class);
 		
-		//遍历控制器
-		for (Class<?> controller : controllerList) {
-			Method[] methods = controller.getMethods();
-			String nameSpace = controller.getAnnotation(Controller.class).value();
-			nameSpace = nameSpace.endsWith("/") ? nameSpace : nameSpace + "/";
-			
-			//构建路由
-			buildRoute(controller, nameSpace, methods);
-			
+		if(null != controllerList && controllerList.size() > 0){
+			//遍历控制器
+			for (Class<?> controller : controllerList) {
+				Method[] methods = controller.getMethods();
+				String nameSpace = controller.getAnnotation(Controller.class).value();
+				nameSpace = nameSpace.endsWith("/") ? nameSpace : nameSpace + "/";
+				
+				//构建路由
+				buildRoute(controller, nameSpace, methods);
+				
+			}
 		}
 		logger.info("route size ：" + urlMapping.size());
 		return urlMapping;
