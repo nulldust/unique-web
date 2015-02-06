@@ -107,7 +107,8 @@ public class DefalutHandler implements Handler {
     		target = target.endsWith("/") ? target.substring(0, target.length() - 1) : target;
     	}
     	if(target.lastIndexOf(".") != -1){
-			target = target.substring(0, target.lastIndexOf("."));
+    		return false;
+			//target = target.substring(0, target.lastIndexOf("."));
 		}
     	if(target.indexOf(".") != -1){
     		return false;

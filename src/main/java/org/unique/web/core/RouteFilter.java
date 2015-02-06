@@ -88,6 +88,7 @@ public class RouteFilter implements Filter {
 
 		// set reqest and response
 		WebContext.setActionContext(request.getServletContext(), request, response);
+		
 		if (!handler.handle(target, request, response)) {
 			chain.doFilter(request, response);
 		}
