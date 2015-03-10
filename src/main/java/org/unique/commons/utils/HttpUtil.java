@@ -64,13 +64,15 @@ public class HttpUtil {
 		// 读取超时 --服务器响应比较慢，增大时间
 		http.setReadTimeout(25000);
 		http.setRequestMethod(method);
-		http.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-		http.setRequestProperty("User-Agent",
-				"Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.146 Safari/537.36");
+		
 		if (null != headers && !headers.isEmpty()) {
 			for (Entry<String, String> entry : headers.entrySet()) {
 				http.setRequestProperty(entry.getKey(), entry.getValue());
 			}
+		} else {
+			http.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+			http.setRequestProperty("User-Agent",
+					"Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.146 Safari/537.36");
 		}
 		http.setDoOutput(true);
 		http.setDoInput(true);
@@ -97,13 +99,15 @@ public class HttpUtil {
 		// 读取超时 --服务器响应比较慢，增大时间
 		http.setReadTimeout(25000);
 		http.setRequestMethod(method);
-		http.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-		http.setRequestProperty("User-Agent",
-				"Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.146 Safari/537.36");
+		
 		if (null != headers && !headers.isEmpty()) {
 			for (Entry<String, String> entry : headers.entrySet()) {
 				http.setRequestProperty(entry.getKey(), entry.getValue());
 			}
+		} else {
+			http.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+			http.setRequestProperty("User-Agent",
+					"Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.146 Safari/537.36");
 		}
 		http.setSSLSocketFactory(ssf);
 		http.setDoOutput(true);
