@@ -148,7 +148,7 @@ public final class RouteMapping {
 						viewReg = viewReg.replaceFirst("/(:\\w+)", "/(\\\\d+)");
 					}
 					if(parameters[i].getType().equals(String.class)){
-						viewReg = viewReg.replaceFirst("/(:[\u4e00-\u9fa5_a-zA-Z0-9\\s]+)", "/([\u4e00-\u9fa5_a-zA-Z0-9\\s]+)");
+						viewReg = viewReg.replaceFirst("/(:[\u4e00-\u9fa5_a-zA-Z0-9]+)", "/([\u4e00-\u9fa5_a-zA-Z0-9]+)");
 					}
 				}
 			}
