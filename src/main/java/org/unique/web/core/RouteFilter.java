@@ -88,6 +88,7 @@ public class RouteFilter implements Filter {
 		// 相对于系统根目录的访问的路径
 		String target = getRelativePath(request, "");
 		target = this.getDecoderStr(target);
+		
 		// set reqest and response
 		WebContext.setActionContext(request.getServletContext(), request, response);
 		
