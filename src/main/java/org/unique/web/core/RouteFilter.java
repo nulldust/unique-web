@@ -16,6 +16,8 @@
 package org.unique.web.core;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -85,13 +87,29 @@ public class RouteFilter implements Filter {
 		
 		// 相对于系统根目录的访问的路径
 		String target = getRelativePath(request, "");
-
+		target = this.getDecoderStr(target);
 		// set reqest and response
 		WebContext.setActionContext(request.getServletContext(), request, response);
 		
 		if (!handler.handle(target, request, response)) {
 			chain.doFilter(request, response);
 		}
+	}
+	
+	/**
+	 * 解URL编码
+	 * @param str
+	 * @return
+	 */
+	private String getDecoderStr(String str){
+		if(null != str){
+			try {
+				return URLDecoder.decode(str, "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				return str;
+			}
+		}
+		return null;
 	}
 	
 	/**
